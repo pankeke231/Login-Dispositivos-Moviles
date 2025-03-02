@@ -21,7 +21,7 @@
         android:id="@+id/signUp_b"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="262dp"
+        android:layout_marginBottom="268dp"
         android:text="Sign Up"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
