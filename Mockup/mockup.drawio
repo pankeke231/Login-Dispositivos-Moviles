@@ -61,6 +61,12 @@
         <mxCell id="OAgnztjfkMtm-UY70IXR-23" value="MIAPP" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="1270" y="80" width="310" height="60" as="geometry" />
         </mxCell>
+        <mxCell id="OAgnztjfkMtm-UY70IXR-25" value="Sign up" style="rounded=1;html=1;shadow=0;dashed=0;whiteSpace=wrap;fontSize=10;fillColor=#666666;align=center;strokeColor=#4D4D4D;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="911.14" y="530" width="87.75" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="OAgnztjfkMtm-UY70IXR-26" value="or" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="925.02" y="500" width="60" height="30" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
