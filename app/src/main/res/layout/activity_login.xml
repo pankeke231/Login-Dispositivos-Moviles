@@ -15,7 +15,6 @@
         android:layout_marginBottom="54dp"
         android:ems="10"
         android:hint="asd123"
-        android:inputType="textPassword"
         app:layout_constraintBottom_toTopOf="@+id/tv_password2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
