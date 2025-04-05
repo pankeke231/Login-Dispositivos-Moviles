@@ -1,7 +1,6 @@
 package com.example.login;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,17 +13,17 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.login.entities.User;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class SignUpActivity extends AppCompatActivity {
 
     private EditText ed_name;
     private EditText ed_password;
     private EditText ed_email;
-    private Button btn_register2;
     private TextView tv_registered;
+
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,88 +35,56 @@ public class SignUpActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         ed_name = findViewById(R.id.ed_name);
         ed_password = findViewById(R.id.ed_password);
         ed_email = findViewById(R.id.ed_email);
-        btn_register2 = findViewById(R.id.btn_register2);
+        Button btn_register2 = findViewById(R.id.btn_register2);
         tv_registered = findViewById(R.id.tv_registered);
 
-        Button btn_register2 = findViewById(R.id.btn_register2);
+        db = FirebaseFirestore.getInstance();
+
         btn_register2.setOnClickListener(v -> signUp());
-
     }
 
-    // Validar el nombre que se recibe, si ya está en los usuarios creados anteriormente,
-    // no se puede registrar.
-    public boolean nameValid() {
-
+    private void signUp() {
         String name = ed_name.getText().toString().trim();
-
-        if (name.isEmpty()) {
-            tv_registered.setText("Name field is empty!");
-            return false;
-        }
-
-        SharedPreferences sharedPreferences = getSharedPreferences("users_prefs", MODE_PRIVATE);
-        if (sharedPreferences.contains(name)) {
-            tv_registered.setText("Name is already in use!");
-            return false;
-        }
-
-        return true;
-    }
-
-    // Validar el email que se recibe, si ya está en los usuarios creados anteriormente,
-    // no se puede registrar.
-    public boolean emailValid() {
-
         String email = ed_email.getText().toString().trim();
+        String password = ed_password.getText().toString().trim();
 
-        if (email.isEmpty()) {
-            tv_registered.setText("Email field is empty!");
-            return false;
+        if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            tv_registered.setText("All fields must be filled!");
+            return;
         }
 
-        SharedPreferences sharedPreferences = getSharedPreferences("users_prefs", MODE_PRIVATE);
-        if (sharedPreferences.contains(email)) {
-            tv_registered.setText("Email is already in use!");
-            return false;
-        }
-
-        return true;
+        // Validar si el nombre o email ya están registrados
+        db.collection("users")
+                .whereEqualTo("name", name)
+                .get()
+                .addOnSuccessListener(nameSnapshot -> {
+                    if (!nameSnapshot.isEmpty()) {
+                        tv_registered.setText("Name is already in use!");
+                    } else {
+                        db.collection("users")
+                                .whereEqualTo("email", email)
+                                .get()
+                                .addOnSuccessListener(emailSnapshot -> {
+                                    if (!emailSnapshot.isEmpty()) {
+                                        tv_registered.setText("Email is already in use!");
+                                    } else {
+                                        // Registrar nuevo usuario
+                                        User user = new User(name, email, password);
+                                        db.collection("users").add(user)
+                                                .addOnSuccessListener(documentReference -> {
+                                                    tv_registered.setText("User registered successfully!");
+                                                    Intent intent = new Intent(this, LoginActivity.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                })
+                                                .addOnFailureListener(e -> tv_registered.setText("Registration failed."));
+                                    }
+                                });
+                    }
+                });
     }
-
-    private void saveUser(String name, String password) {
-        SharedPreferences sharedPreferences = getSharedPreferences("users_prefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(name, password); // Guarda usuario y contraseña
-        editor.apply();
-    }
-
-    public void signUp() {
-
-        if (nameValid() && emailValid()) {
-            String name = ed_name.getText().toString().trim();
-            String password = ed_password.getText().toString().trim();
-//            String email = ed_email.getText().toString().trim();
-
-            if (password.isEmpty()) {
-                tv_registered.setText("Password field is empty!");
-                return;
-            }
-
-            saveUser(name, password); // Guarda el usuario
-
-            tv_registered.setText("User registered successfully!");
-
-            // Ir a LoginActivity después de registrar
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            tv_registered.setText("User not created!");
-        }
-
-    }
-
 }
