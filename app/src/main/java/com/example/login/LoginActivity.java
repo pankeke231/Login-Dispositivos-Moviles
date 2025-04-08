@@ -60,8 +60,8 @@ public class LoginActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     if (!snapshot.isEmpty()) {
-                        // Usuario encontrado con credenciales válidas
                         Intent intent = new Intent(this, PageActivity.class);
+                        intent.putExtra("username", name); // 👈 AQUI agregamos el nombre
                         startActivity(intent);
                         finish();
                     } else {
@@ -72,4 +72,5 @@ public class LoginActivity extends AppCompatActivity {
                     tv_logeado.setText("Login failed. Please try again.");
                 });
     }
+
 }

@@ -6,6 +6,15 @@
     android:orientation="vertical"
     tools:context=".PageActivity">
 
+    <TextView
+        android:id="@+id/tv_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bienvenido"
+        android:textSize="18sp"
+        android:layout_margin="16dp" />
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
