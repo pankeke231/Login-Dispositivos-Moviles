@@ -1,15 +1,15 @@
 package com.example.login.entities;
 
-public class Productos {
+public class Producto {
     private String name;
     private String description;
     private int imageResource;
     private double precio;
     private int cantidad;
 
-    public Productos() {} // Necesario para Firebase
+    public Producto() {} // Necesario para Firebase
 
-    public Productos(String name, String description, int imageResource, double precio) {
+    public Producto(String name, String description, int imageResource, double precio) {
         this.name = name;
         this.description = description;
         this.imageResource = imageResource;

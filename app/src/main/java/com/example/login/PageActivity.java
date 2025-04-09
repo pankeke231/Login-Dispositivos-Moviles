@@ -2,7 +2,6 @@ package com.example.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -10,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.login.entities.Productos;
+import com.example.login.entities.Producto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,7 @@ public class PageActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ProductAdapter productAdapter;
-    private List<Productos> productList;
+    private List<Producto> productList;
     private Button logoutButton;
     private TextView tvUsername; // TextView para mostrar el nombre del usuario
     private String username;     // <- Declaración única aquí
@@ -42,9 +41,9 @@ public class PageActivity extends AppCompatActivity {
 
         // Lista de productos
         productList = new ArrayList<>();
-        productList.add(new Productos("Tarjeta RP", "Tarjeta de Riot Points", R.drawable.rp, 100));
-        productList.add(new Productos("Camiseta LoL", "Camiseta oficial de League of Legends", R.drawable.rp, 200));
-        productList.add(new Productos("Figura Yasuo", "Figura coleccionable de Yasuo", R.drawable.rp, 300));
+        productList.add(new Producto("Tarjeta RP", "Tarjeta de Riot Points", R.drawable.rp, 100));
+        productList.add(new Producto("Camiseta LoL", "Camiseta oficial de League of Legends", R.drawable.rp, 200));
+        productList.add(new Producto("Figura Yasuo", "Figura coleccionable de Yasuo", R.drawable.rp, 300));
 
         // Adaptador con username
         productAdapter = new ProductAdapter(productList, username);

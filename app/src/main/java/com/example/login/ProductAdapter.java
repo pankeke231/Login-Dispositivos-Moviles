@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.login.entities.Productos;
+import com.example.login.entities.Producto;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -19,11 +19,11 @@ import java.util.Map;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
-    private List<Productos> productList;
+    private List<Producto> productList;
     private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private String username;
 
-    public ProductAdapter(List<Productos> productList, String username) {
+    public ProductAdapter(List<Producto> productList, String username) {
         this.productList = productList;
         this.username = username;
     }
@@ -37,7 +37,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
-        Productos product = productList.get(position);
+        Producto product = productList.get(position);
         holder.name.setText(product.getName());
         holder.description.setText(product.getDescription());
         holder.image.setImageResource(product.getImageResource());
