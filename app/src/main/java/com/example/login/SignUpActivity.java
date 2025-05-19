@@ -13,8 +13,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.login.entities.User;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -22,8 +20,6 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText ed_password;
     private EditText ed_email;
     private TextView tv_registered;
-
-    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +38,6 @@ public class SignUpActivity extends AppCompatActivity {
         Button btn_register2 = findViewById(R.id.btn_register2);
         tv_registered = findViewById(R.id.tv_registered);
 
-        db = FirebaseFirestore.getInstance();
-
         btn_register2.setOnClickListener(v -> signUp());
     }
 
@@ -57,34 +51,12 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
-        // Validar si el nombre o email ya están registrados
-        db.collection("users")
-                .whereEqualTo("name", name)
-                .get()
-                .addOnSuccessListener(nameSnapshot -> {
-                    if (!nameSnapshot.isEmpty()) {
-                        tv_registered.setText("Name is already in use!");
-                    } else {
-                        db.collection("users")
-                                .whereEqualTo("email", email)
-                                .get()
-                                .addOnSuccessListener(emailSnapshot -> {
-                                    if (!emailSnapshot.isEmpty()) {
-                                        tv_registered.setText("Email is already in use!");
-                                    } else {
-                                        // Registrar nuevo usuario
-                                        User user = new User(name, email, password);
-                                        db.collection("users").add(user)
-                                                .addOnSuccessListener(documentReference -> {
-                                                    tv_registered.setText("User registered successfully!");
-                                                    Intent intent = new Intent(this, LoginActivity.class);
-                                                    startActivity(intent);
-                                                    finish();
-                                                })
-                                                .addOnFailureListener(e -> tv_registered.setText("Registration failed."));
-                                    }
-                                });
-                    }
-                });
+        // Aquí iría la lógica de validación/registro local (si la implementas)
+        // Por ahora solo muestra éxito e inicia LoginActivity
+
+        tv_registered.setText("User registered successfully!");
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

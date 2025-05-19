@@ -11,16 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.login.entities.Producto;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
     private List<Producto> productList;
-    private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private String username;
 
     public ProductAdapter(List<Producto> productList, String username) {
@@ -61,15 +57,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         holder.btnAgregar.setOnClickListener(v -> {
             if (product.getCantidad() > 0) {
-                Map<String, Object> compra = new HashMap<>();
-                compra.put("usuario", username);
-                compra.put("producto", product.getName());
-                compra.put("descripcion", product.getDescription());
-                compra.put("precioUnitario", product.getPrecio());
-                compra.put("cantidad", product.getCantidad());
-                compra.put("total", product.getCantidad() * product.getPrecio());
-
-                firestore.collection("compras").add(compra);
+                // Aquí puedes agregar lógica para enviar la compra al backend vía HTTP
+                // Ejemplo: listener, callback o llamada a un ViewModel
             }
         });
     }
