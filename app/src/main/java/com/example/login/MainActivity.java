@@ -88,15 +88,102 @@ public class MainActivity extends AppCompatActivity {
         btn_getWeatherByID.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "You clicked me2", Toast.LENGTH_SHORT).show();
+                String pokemonName = et_dataInput.getText().toString().trim().toLowerCase();
+                if (pokemonName.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Please enter a Pokémon name or ID", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String url = "https://pokeapi.co/api/v2/pokemon-species/" + pokemonName;
+                RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+
+                JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    String color = response.getJSONObject("color").getString("name");
+                                    Toast.makeText(MainActivity.this, "Species color: " + color, Toast.LENGTH_LONG).show();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(MainActivity.this, "Error parsing species data", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(MainActivity.this, "Error fetching species", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                );
+
+                queue.add(request);
             }
         });
+
 
         btn_getWeatherByName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "You typed " + et_dataInput.getText().toString(), Toast.LENGTH_SHORT).show();
+                String pokemonName = et_dataInput.getText().toString().trim().toLowerCase();
+                if (pokemonName.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Please enter a Pokémon name", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String speciesUrl = "https://pokeapi.co/api/v2/pokemon-species/" + pokemonName;
+                RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+
+                JsonObjectRequest speciesRequest = new JsonObjectRequest(Request.Method.GET, speciesUrl, null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    String evolutionUrl = response.getJSONObject("evolution_chain").getString("url");
+
+                                    // Ahora consultamos la evolución
+                                    JsonObjectRequest evolutionRequest = new JsonObjectRequest(Request.Method.GET, evolutionUrl, null,
+                                            new Response.Listener<JSONObject>() {
+                                                @Override
+                                                public void onResponse(JSONObject evolutionResponse) {
+                                                    try {
+                                                        JSONObject chain = evolutionResponse.getJSONObject("chain");
+                                                        String baseSpecies = chain.getJSONObject("species").getString("name");
+                                                        Toast.makeText(MainActivity.this, "Base evolution: " + baseSpecies, Toast.LENGTH_LONG).show();
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                        Toast.makeText(MainActivity.this, "Error parsing evolution chain", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            },
+                                            new Response.ErrorListener() {
+                                                @Override
+                                                public void onErrorResponse(VolleyError error) {
+                                                    Toast.makeText(MainActivity.this, "Error fetching evolution chain", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                    );
+
+                                    queue.add(evolutionRequest);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(MainActivity.this, "Error parsing species data", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(MainActivity.this, "Error fetching species", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                );
+
+                queue.add(speciesRequest);
             }
         });
+
     }
 }
