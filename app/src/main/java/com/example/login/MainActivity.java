@@ -2,6 +2,7 @@ package com.example.login;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -20,11 +21,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
-    Button btn_cityID, btn_getWeatherByID, btn_getWeatherByName;
-    EditText et_dataInput;
-    ListView lv_weatherReport;
+    Button btn_getAbilities, btn_getColor, btn_getBaseEvolution;
+    EditText et_pokemonInput;
+    ListView lv_results;
+
+    ArrayList<String> resultsList;
+    ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,24 +38,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Referencias de UI
-        btn_cityID = findViewById(R.id.btn_getCityID);
-        btn_getWeatherByID = findViewById(R.id.btn_getWeatherByCityID);
-        btn_getWeatherByName = findViewById(R.id.btn_gwtWeatherByCityName);
-        et_dataInput = findViewById(R.id.et_dataInput);
-        lv_weatherReport = findViewById(R.id.lv_weatherReports);
+        btn_getAbilities = findViewById(R.id.btn_getAbilities);
+        btn_getColor = findViewById(R.id.btn_getSpeciesColor);
+        btn_getBaseEvolution = findViewById(R.id.btn_getBaseEvolution);
+        et_pokemonInput = findViewById(R.id.et_pokemonInput);
+        lv_results = findViewById(R.id.lv_results);
 
-        // Listener del botón principal
-        btn_cityID.setOnClickListener(new View.OnClickListener() {
+        // Inicialización del ListView y el adaptador
+        resultsList = new ArrayList<>();
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, resultsList);
+        lv_results.setAdapter(adapter);
+
+        // Obtener habilidades del Pokémon
+        btn_getAbilities.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String pokemonName = et_dataInput.getText().toString().trim().toLowerCase();
+                String pokemonName = et_pokemonInput.getText().toString().trim().toLowerCase();
                 if (pokemonName.isEmpty()) {
                     Toast.makeText(MainActivity.this, "Please enter a Pokémon name", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 String url = "https://pokeapi.co/api/v2/pokemon/" + pokemonName;
-
                 RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
 
                 JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
@@ -58,15 +68,15 @@ public class MainActivity extends AppCompatActivity {
                             public void onResponse(JSONObject response) {
                                 try {
                                     JSONArray abilitiesArray = response.getJSONArray("abilities");
-                                    StringBuilder abilitiesText = new StringBuilder();
+                                    resultsList.clear();
 
                                     for (int i = 0; i < abilitiesArray.length(); i++) {
                                         JSONObject abilityObject = abilitiesArray.getJSONObject(i).getJSONObject("ability");
                                         String abilityName = abilityObject.getString("name");
-                                        abilitiesText.append(abilityName).append("\n");
+                                        resultsList.add("Ability: " + abilityName);
                                     }
 
-                                    Toast.makeText(MainActivity.this, "Abilities:\n" + abilitiesText, Toast.LENGTH_LONG).show();
+                                    adapter.notifyDataSetChanged();
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -85,10 +95,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btn_getWeatherByID.setOnClickListener(new View.OnClickListener() {
+        // Obtener color de la especie del Pokémon
+        btn_getColor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String pokemonName = et_dataInput.getText().toString().trim().toLowerCase();
+                String pokemonName = et_pokemonInput.getText().toString().trim().toLowerCase();
                 if (pokemonName.isEmpty()) {
                     Toast.makeText(MainActivity.this, "Please enter a Pokémon name or ID", Toast.LENGTH_SHORT).show();
                     return;
@@ -103,7 +114,9 @@ public class MainActivity extends AppCompatActivity {
                             public void onResponse(JSONObject response) {
                                 try {
                                     String color = response.getJSONObject("color").getString("name");
-                                    Toast.makeText(MainActivity.this, "Species color: " + color, Toast.LENGTH_LONG).show();
+                                    resultsList.clear();
+                                    resultsList.add("Species color: " + color);
+                                    adapter.notifyDataSetChanged();
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                     Toast.makeText(MainActivity.this, "Error parsing species data", Toast.LENGTH_SHORT).show();
@@ -115,18 +128,17 @@ public class MainActivity extends AppCompatActivity {
                             public void onErrorResponse(VolleyError error) {
                                 Toast.makeText(MainActivity.this, "Error fetching species", Toast.LENGTH_SHORT).show();
                             }
-                        }
-                );
+                        });
 
                 queue.add(request);
             }
         });
 
-
-        btn_getWeatherByName.setOnClickListener(new View.OnClickListener() {
+        // Obtener evolución base del Pokémon
+        btn_getBaseEvolution.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String pokemonName = et_dataInput.getText().toString().trim().toLowerCase();
+                String pokemonName = et_pokemonInput.getText().toString().trim().toLowerCase();
                 if (pokemonName.isEmpty()) {
                     Toast.makeText(MainActivity.this, "Please enter a Pokémon name", Toast.LENGTH_SHORT).show();
                     return;
@@ -142,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                                 try {
                                     String evolutionUrl = response.getJSONObject("evolution_chain").getString("url");
 
-                                    // Ahora consultamos la evolución
+                                    // Segunda solicitud: cadena de evolución
                                     JsonObjectRequest evolutionRequest = new JsonObjectRequest(Request.Method.GET, evolutionUrl, null,
                                             new Response.Listener<JSONObject>() {
                                                 @Override
@@ -150,7 +162,9 @@ public class MainActivity extends AppCompatActivity {
                                                     try {
                                                         JSONObject chain = evolutionResponse.getJSONObject("chain");
                                                         String baseSpecies = chain.getJSONObject("species").getString("name");
-                                                        Toast.makeText(MainActivity.this, "Base evolution: " + baseSpecies, Toast.LENGTH_LONG).show();
+                                                        resultsList.clear();
+                                                        resultsList.add("Base evolution: " + baseSpecies);
+                                                        adapter.notifyDataSetChanged();
                                                     } catch (JSONException e) {
                                                         e.printStackTrace();
                                                         Toast.makeText(MainActivity.this, "Error parsing evolution chain", Toast.LENGTH_SHORT).show();
@@ -162,8 +176,7 @@ public class MainActivity extends AppCompatActivity {
                                                 public void onErrorResponse(VolleyError error) {
                                                     Toast.makeText(MainActivity.this, "Error fetching evolution chain", Toast.LENGTH_SHORT).show();
                                                 }
-                                            }
-                                    );
+                                            });
 
                                     queue.add(evolutionRequest);
 
@@ -178,12 +191,10 @@ public class MainActivity extends AppCompatActivity {
                             public void onErrorResponse(VolleyError error) {
                                 Toast.makeText(MainActivity.this, "Error fetching species", Toast.LENGTH_SHORT).show();
                             }
-                        }
-                );
+                        });
 
                 queue.add(speciesRequest);
             }
         });
-
     }
 }

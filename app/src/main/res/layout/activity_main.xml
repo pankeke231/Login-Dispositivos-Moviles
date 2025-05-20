@@ -7,52 +7,57 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <!-- Botón para obtener habilidades -->
     <Button
-        android:id="@+id/btn_getCityID"
+        android:id="@+id/btn_getAbilities"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Get City ID"
-        app:layout_constraintEnd_toStartOf="@+id/btn_getWeatherByCityID"
+        android:text="Get Abilities"
+        app:layout_constraintEnd_toStartOf="@+id/btn_getSpeciesColor"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Botón para obtener color de especie -->
     <Button
-        android:id="@+id/btn_getWeatherByCityID"
+        android:id="@+id/btn_getSpeciesColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Weather By ID"
-        app:layout_constraintEnd_toStartOf="@+id/btn_gwtWeatherByCityName"
-        app:layout_constraintStart_toEndOf="@id/btn_getCityID"
-        app:layout_constraintTop_toTopOf="@+id/btn_getCityID" />
+        android:text="Get Species Color"
+        app:layout_constraintEnd_toStartOf="@+id/btn_getBaseEvolution"
+        app:layout_constraintStart_toEndOf="@id/btn_getAbilities"
+        app:layout_constraintTop_toTopOf="@+id/btn_getAbilities" />
 
+    <!-- Botón para obtener evolución base -->
     <Button
-        android:id="@+id/btn_gwtWeatherByCityName"
+        android:id="@+id/btn_getBaseEvolution"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Weather By Name"
+        android:text="Get Base Evolution"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btn_getWeatherByCityID"
-        app:layout_constraintTop_toTopOf="@+id/btn_getWeatherByCityID" />
+        app:layout_constraintStart_toEndOf="@id/btn_getSpeciesColor"
+        app:layout_constraintTop_toTopOf="@+id/btn_getSpeciesColor" />
 
+    <!-- Campo de entrada de nombre o ID -->
     <EditText
-        android:id="@+id/et_dataInput"
+        android:id="@+id/et_pokemonInput"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="pokemon name"
+        android:hint="Pokemon name or ID"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_getCityID" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_getAbilities" />
 
+    <!-- Lista para mostrar resultados -->
     <ListView
-        android:id="@+id/lv_weatherReports"
+        android:id="@+id/lv_results"
         android:layout_width="409dp"
         android:layout_height="628dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_dataInput" />
+        app:layout_constraintTop_toBottomOf="@+id/et_pokemonInput" />
 </androidx.constraintlayout.widget.ConstraintLayout>
